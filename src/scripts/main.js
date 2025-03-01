@@ -1,35 +1,34 @@
 'use strict';
 
-const list = document.querySelectorAll('li');
+const list = Array.from(document.querySelectorAll('li'));
 const ul = document.querySelector('ul');
 
 function getEmployees(listOfPeople) {
-  const people = [];
-
-  for (const item of listOfPeople) {
-    people.push({
-      name: item.innerHTML.trim(),
-      age: item.dataset.age,
-      salary: item.dataset.salary,
-      position: item.dataset.position,
-    });
-  }
+  const people = listOfPeople.map((person) => ({
+    name: person.innerHTML.trim(),
+    age: person.dataset.age,
+    salary: person.dataset.salary,
+    position: person.dataset.position,
+  }));
 
   return people;
 }
 
 function sortList(listOfLi, listOfPeople) {
   const newList = [...listOfPeople].sort((item1, item2) => {
-    return makeNumber(item2) - makeNumber(item1);
+    return makeNumber(item2.dataset.salary) - makeNumber(item1.dataset.salary);
   });
 
+  listOfLi.innerHTML = '';
+
   for (const item of newList) {
-    listOfLi.append(item);
+    listOfLi.appendChild(item);
   }
 }
+
 sortList(ul, list);
 getEmployees(list);
 
-function makeNumber(str) {
-  return +str.dataset.salary.split(',').join('').slice(1);
+function makeNumber(person) {
+  return +person.replace(/[$,]/g, '');
 }
